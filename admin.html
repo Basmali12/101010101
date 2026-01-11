@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +48,7 @@
                 <div class="form-group">
                     <label>صورة المشروع</label>
                     <input type="file" id="project-image" accept="image/*">
-                    <div id="upload-status" style="margin-top: 10px; font-size: 0.9rem; color: #666;"></div>
+                    <div id="upload-status" style="margin-top: 10px; font-size: 0.9rem; font-weight: bold; color: #666;"></div>
                 </div>
 
                 <button id="publish-btn" class="btn-publish">
@@ -73,11 +73,10 @@
             const code = document.getElementById('secret-code').value;
             const errorMsg = document.getElementById('error-msg');
             
-            // الرمز السري المتفق عليه
+            // الرمز السري
             if(code === "112200") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-                // حفظ حالة الدخول مؤقتاً
                 sessionStorage.setItem('isAdmin', 'true');
             } else {
                 errorMsg.style.display = 'block';
@@ -89,7 +88,6 @@
             location.reload();
         }
 
-        // التحقق عند تحميل الصفحة إذا كان مسجل دخول سابقاً
         if(sessionStorage.getItem('isAdmin') === 'true') {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
