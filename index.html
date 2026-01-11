@@ -5,440 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AL-MALAF COMPANY | شركة الملف</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <link rel="stylesheet" href="style.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-    <style>
-        :root {
-            --primary-color: #0a2e52; /* Deep Navy Blue */
-            --secondary-color: #d4af37; /* Gold/Oil Yellow */
-            --accent-color: #f4f4f4;
-            --text-dark: #333;
-            --text-light: #fff;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f9f9f9;
-            color: var(--text-dark);
-            overflow-x: hidden;
-            padding-bottom: 90px; /* Space for bottom nav */
-        }
-
-        /* Arabic Typography override */
-        body.rtl {
-            font-family: 'Cairo', sans-serif;
-            direction: rtl;
-            text-align: right;
-        }
-
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-
-        /* --- Header & Lang Switcher --- */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .lang-btn {
-            background: var(--primary-color);
-            color: var(--text-light);
-            border: none;
-            padding: 8px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: var(--transition);
-        }
-
-        .lang-btn:hover {
-            background: var(--secondary-color);
-            color: var(--primary-color);
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(10, 46, 82, 0.8), rgba(10, 46, 82, 0.7)), url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin-bottom: 40px;
-            line-height: 1.6;
-            color: #e0e0e0;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 20px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .btn-primary {
-            background: var(--secondary-color);
-            color: var(--primary-color);
-        }
-
-        .btn-outline {
-            border-color: white;
-            color: white;
-            background: transparent;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* --- Sections General --- */
-        section {
-            padding: 80px 10%;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .section-title span {
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: var(--secondary-color);
-            margin: 0 auto;
-        }
-
-        /* --- Services Grid with 3D Flip --- */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .flip-card {
-            background-color: transparent;
-            height: 350px;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 15px;
-        }
-
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .flip-card-front {
-            background-color: white;
-            color: var(--primary-color);
-            border: 1px solid #eee;
-        }
-
-        .flip-card-front i {
-            font-size: 4rem;
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-        }
-
-        .flip-card-front h3 {
-            font-size: 1.5rem;
-        }
-
-        .flip-card-back {
-            background-color: var(--primary-color);
-            color: white;
-            transform: rotateY(180deg);
-            padding: 40px;
-        }
-
-        .flip-card-back h3 {
-            color: var(--secondary-color);
-            margin-bottom: 15px;
-        }
-        
-        .flip-card-back p {
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        /* --- About & Why Us Section --- */
-        .about-content {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 50px;
-        }
-
-        .about-text {
-            flex: 1;
-        }
-
-        .about-stats {
-            flex: 1;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border-bottom: 4px solid var(--secondary-color);
-        }
-
-        /* --- Industries Section --- */
-        .industries {
-            background: #f0f4f8;
-        }
-
-        .industry-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .industry-tag {
-            background: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            color: var(--primary-color);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: var(--transition);
-        }
-
-        .industry-tag:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: scale(1.05);
-        }
-        
-        /* --- Gallery Section --- */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-        .gallery-item {
-            height: 200px;
-            background: #ddd;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        /* --- Bottom Navigation (Tabs with Icons) --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 95%;
-            max-width: 500px;
-            background: white;
-            height: 70px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 999;
-            padding: 0 10px;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.75rem;
-            color: #999;
-            transition: var(--transition);
-            cursor: pointer;
-            padding: 5px;
-            position: relative;
-            flex: 1;
-        }
-
-        /* Icon Styles for Bottom Nav */
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            color: #999; /* Inactive Color */
-            transition: var(--transition);
-        }
-
-        .nav-item.active {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-        
-        .nav-item.active i {
-            color: var(--primary-color);
-            transform: translateY(-5px);
-        }
-
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            width: 5px;
-            height: 5px;
-            background: var(--secondary-color);
-            border-radius: 50%;
-        }
-
-        /* --- Floating WhatsApp --- */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            background-color: #25d366;
-            color: #FFF;
-            width: 50px;
-            height: 50px;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 25px;
-            box-shadow: 2px 2px 3px #999;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-        }
-
-        body.rtl .whatsapp-float {
-            right: auto;
-            left: 20px;
-        }
-
-        /* Language Utility Classes */
-        [data-lang="ar"] { display: none; }
-        body.rtl [data-lang="ar"] { display: block; }
-        body.rtl [data-lang="en"] { display: none; }
-        
-        span[data-lang="ar"] { display: none; }
-        body.rtl span[data-lang="ar"] { display: inline; }
-        body.rtl span[data-lang="en"] { display: none; }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .about-content { flex-direction: column; }
-            .cta-group { flex-direction: column; width: 100%; }
-            .btn { width: 100%; text-align: center; }
-        }
-    </style>
 </head>
 <body>
-
+    
     <header>
         <div class="logo">
-            <i class="fa-solid fa-oil-well"></i>
+            <div class="new-logo-svg"></div>
             <span data-lang="en">AL-MALAF</span>
             <span data-lang="ar">شركة الملف</span>
         </div>
@@ -449,11 +31,15 @@
     </header>
 
     <section id="home" class="hero">
+        <div class="hero-logo-container gsap-hero">
+            <div class="hero-logo-svg"></div>
+        </div>
+
         <h1 class="gsap-hero">
             <span data-lang="en">Al-Malaf Company</span>
             <span data-lang="ar">شركة الملف</span>
         </h1>
-        <h3 style="margin-bottom: 20px; font-weight:300;" class="gsap-hero">
+        <h3 class="gsap-hero subtitle">
             <span data-lang="en">Professional Tender, Bid & Oilfield Support Services</span>
             <span data-lang="ar">حلول احترافية للتنادر والمناقصات والخدمات النفطية</span>
         </h3>
@@ -473,7 +59,7 @@
         </div>
     </section>
 
-    <section id="about" style="background-color: white;">
+    <section id="about">
         <div class="section-title">
             <h2>
                 <span data-lang="en">About Us</span>
@@ -495,7 +81,7 @@
             </div>
             <div class="about-stats gsap-fade-up">
                 <div class="stat-box">
-                    <i class="fa-solid fa-eye" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <i class="fa-solid fa-eye stat-icon"></i>
                     <h4>
                         <span data-lang="en">Vision</span>
                         <span data-lang="ar">الرؤية</span>
@@ -506,7 +92,7 @@
                     </p>
                 </div>
                 <div class="stat-box">
-                    <i class="fa-solid fa-bullseye" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <i class="fa-solid fa-bullseye stat-icon"></i>
                     <h4>
                         <span data-lang="en">Mission</span>
                         <span data-lang="ar">الرسالة</span>
@@ -601,30 +187,6 @@
                     </div>
                 </div>
             </div>
-             <div class="flip-card gsap-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-compass-drafting"></i>
-                        <h3><span data-lang="en">Designs</span><span data-lang="ar">التصاميم</span></h3>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3><span data-lang="en">Engineering</span><span data-lang="ar">الهندسية</span></h3>
-                        <p><span data-lang="en">Civil, Mech, Elec designs.</span><span data-lang="ar">تصاميم مدنية، ميكانيكية، كهربائية.</span></p>
-                    </div>
-                </div>
-            </div>
-             <div class="flip-card gsap-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-certificate"></i>
-                        <h3><span data-lang="en">ISO</span><span data-lang="ar">الأيزو</span></h3>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3><span data-lang="en">Certification</span><span data-lang="ar">الشهادات</span></h3>
-                        <p><span data-lang="en">IAF Accredited ISOs.</span><span data-lang="ar">شهادات معتمدة عالمياً.</span></p>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -656,7 +218,7 @@
         </div>
     </section>
 
-    <section id="experience" style="background: white;">
+    <section id="experience">
         <div class="section-title">
             <h2>
                 <span data-lang="en">Experience</span>
@@ -676,22 +238,7 @@
         </div>
     </section>
 
-    <section id="gallery" class="industries">
-        <div class="section-title">
-            <h2>
-                <span data-lang="en">Project Gallery</span>
-                <span data-lang="ar">معرض المشاريع</span>
-            </h2>
-            <span></span>
-        </div>
-        <div class="gallery-grid">
-            <div class="gallery-item gsap-scale"><img src="https://images.unsplash.com/photo-1596489392261-0422c5e533c3?q=80&w=400&auto=format" alt="Project 1"></div>
-            <div class="gallery-item gsap-scale"><img src="https://images.unsplash.com/photo-1582281298055-e25b84a30b0b?q=80&w=400&auto=format" alt="Project 2"></div>
-            <div class="gallery-item gsap-scale"><img src="https://images.unsplash.com/photo-1535268693098-54064f5d33c9?q=80&w=400&auto=format" alt="Project 3"></div>
-        </div>
-    </section>
-
-    <section id="why-us" style="background: white;">
+    <section id="why-us" class="why-us-section">
         <div class="section-title">
             <h2>
                 <span data-lang="en">Why Al-Malaf?</span>
@@ -699,22 +246,38 @@
             </h2>
             <span></span>
         </div>
-        <div class="services-grid">
+        <div class="why-us-grid">
              <div class="stat-box gsap-fade-up">
-                <i class="fa-solid fa-map-location-dot" style="font-size:1.5rem; color:var(--secondary-color);"></i>
+                <i class="fa-solid fa-map-location-dot stat-icon"></i>
                 <h4><span data-lang="en">Local Expertise</span><span data-lang="ar">خبرة محلية</span></h4>
+                <p class="why-text">
+                    <span data-lang="en">Deep understanding of Iraqi market.</span>
+                    <span data-lang="ar">فهم عميق للسوق العراقي.</span>
+                </p>
             </div>
             <div class="stat-box gsap-fade-up">
-                <i class="fa-solid fa-globe" style="font-size:1.5rem; color:var(--secondary-color);"></i>
+                <i class="fa-solid fa-globe stat-icon"></i>
                 <h4><span data-lang="en">International Standards</span><span data-lang="ar">معايير دولية</span></h4>
+                <p class="why-text">
+                    <span data-lang="en">Compliance with ISO & API.</span>
+                    <span data-lang="ar">الامتثال لمعايير ISO و API.</span>
+                </p>
             </div>
              <div class="stat-box gsap-fade-up">
-                <i class="fa-solid fa-user-shield" style="font-size:1.5rem; color:var(--secondary-color);"></i>
+                <i class="fa-solid fa-user-shield stat-icon"></i>
                 <h4><span data-lang="en">Confidentiality</span><span data-lang="ar">السرية</span></h4>
+                <p class="why-text">
+                    <span data-lang="en">Secure data handling.</span>
+                    <span data-lang="ar">حماية تامة للبيانات.</span>
+                </p>
             </div>
              <div class="stat-box gsap-fade-up">
-                <i class="fa-solid fa-gauge-high" style="font-size:1.5rem; color:var(--secondary-color);"></i>
+                <i class="fa-solid fa-gauge-high stat-icon"></i>
                 <h4><span data-lang="en">Speed & Accuracy</span><span data-lang="ar">سرعة ودقة</span></h4>
+                <p class="why-text">
+                    <span data-lang="en">Timely delivery.</span>
+                    <span data-lang="ar">تسليم في الموعد المحدد.</span>
+                </p>
             </div>
         </div>
     </section>
@@ -727,16 +290,29 @@
             </h2>
             <span></span>
         </div>
-        <div style="text-align: center;">
+        <div class="contact-container">
             <p style="font-size: 1.2rem; margin-bottom: 30px;">
                 <span data-lang="en">We are ready to support your projects.</span>
                 <span data-lang="ar">نحن مستعدون لدعم مشاريعكم وتقديم الاستشارات.</span>
             </p>
-            <a href="mailto:info@almalaf.com" class="btn btn-primary">
-                <i class="fa-solid fa-envelope"></i> info@almalaf.com
+            
+            <a href="mailto:info@al-malaf.com" class="btn btn-primary">
+                <i class="fa-solid fa-envelope"></i> info@al-malaf.com
             </a>
-            <div style="margin-top: 20px;">
-                <i class="fa-solid fa-location-dot" style="color: var(--secondary-color);"></i>
+
+            <div class="phones-container">
+                <a href="tel:+9647707790184" class="phone-link">
+                    <i class="fa-solid fa-phone"></i> 
+                    <span class="ltr-text">+964 770 779 0184</span>
+                </a>
+                <a href="tel:+9647772565777" class="phone-link">
+                    <i class="fa-solid fa-phone"></i> 
+                    <span class="ltr-text">+964 777 256 5777</span>
+                </a>
+            </div>
+
+            <div style="margin-top: 30px;" class="contact-location">
+                <i class="fa-solid fa-location-dot"></i>
                 <span data-lang="en"> Iraq, Baghdad</span>
                 <span data-lang="ar"> العراق، بغداد</span>
             </div>
@@ -773,93 +349,6 @@
         </a>
     </div>
 
-    <script>
-        // Language Toggle Logic
-        let currentLang = 'en';
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'ar' : 'en';
-            
-            // Toggle Body Class for RTL/Fonts
-            if(currentLang === 'ar') {
-                document.body.classList.add('rtl');
-                document.documentElement.lang = 'ar';
-            } else {
-                document.body.classList.remove('rtl');
-                document.documentElement.lang = 'en';
-            }
-            
-            // Refresh ScrollTrigger because layout changed
-            setTimeout(() => {
-                ScrollTrigger.refresh();
-            }, 100);
-        }
-
-        // Active Link Handling for Bottom Nav
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // GSAP Animations
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Hero Animation (On Load)
-        gsap.from(".gsap-hero", {
-            duration: 1,
-            y: 50,
-            opacity: 0,
-            stagger: 0.2,
-            ease: "power3.out",
-            delay: 0.5
-        });
-
-        // Services Cards Animation (On Scroll)
-        gsap.utils.toArray(".gsap-card").forEach((card, i) => {
-            gsap.from(card, {
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 50,
-                opacity: 0,
-                duration: 0.6,
-                delay: i * 0.1
-            });
-        });
-
-        // Fade Up General Elements
-        gsap.utils.toArray(".gsap-fade-up").forEach(el => {
-            gsap.from(el, {
-                scrollTrigger: {
-                    trigger: el,
-                    start: "top 80%"
-                },
-                y: 30,
-                opacity: 0,
-                duration: 0.8
-            });
-        });
-
-        // Scale Up Industry Tags
-        gsap.utils.toArray(".gsap-scale").forEach((el, i) => {
-            gsap.from(el, {
-                scrollTrigger: {
-                    trigger: el,
-                    start: "top 90%"
-                },
-                scale: 0.5,
-                opacity: 0,
-                duration: 0.5,
-                delay: i * 0.1
-            });
-        });
-
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
-
