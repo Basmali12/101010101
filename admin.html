@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | شركة الملف</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <i class="fa-solid fa-lock" style="font-size: 3rem; color: #845449; margin-bottom: 20px;"></i>
+            <h2>منطقة الإدارة</h2>
+            <p>أدخل الرمز السري للمتابعة</p>
+            <input type="password" id="secret-code" placeholder="الرمز السري" dir="ltr">
+            <button onclick="checkCode()" class="btn-login">دخول</button>
+            <p id="error-msg" style="color: red; display: none; margin-top: 10px;">الرمز خاطئ!</p>
+        </div>
+    </div>
+
+    <div id="dashboard" class="dashboard-container" style="display: none;">
+        
+        <header class="admin-header">
+            <h3>لوحة التحكم - شركة الملف</h3>
+            <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        </header>
+
+        <div class="admin-content">
+            
+            <div class="add-section">
+                <h4><i class="fa-solid fa-plus-circle"></i> إضافة مشروع جديد</h4>
+                
+                <div class="form-group">
+                    <label>عنوان المشروع</label>
+                    <input type="text" id="project-title" placeholder="مثلاً: تجهيز حقل مجنون">
+                </div>
+
+                <div class="form-group">
+                    <label>تفاصيل المشروع</label>
+                    <textarea id="project-desc" rows="4" placeholder="وصف العمل الذي تم إنجازه..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>صورة المشروع</label>
+                    <input type="file" id="project-image" accept="image/*">
+                    <div id="upload-status" style="margin-top: 10px; font-size: 0.9rem; color: #666;"></div>
+                </div>
+
+                <button id="publish-btn" class="btn-publish">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> نشر المشروع
+                </button>
+            </div>
+
+            <div class="list-section">
+                <h4><i class="fa-solid fa-list-check"></i> المشاريع الحالية</h4>
+                <div id="projects-list" class="projects-wrapper">
+                    <p style="text-align: center; color: #888;">جاري تحميل البيانات...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module" src="admin-script.js"></script>
+
+    <script>
+        function checkCode() {
+            const code = document.getElementById('secret-code').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            // الرمز السري المتفق عليه
+            if(code === "112200") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                // حفظ حالة الدخول مؤقتاً
+                sessionStorage.setItem('isAdmin', 'true');
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isAdmin');
+            location.reload();
+        }
+
+        // التحقق عند تحميل الصفحة إذا كان مسجل دخول سابقاً
+        if(sessionStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
