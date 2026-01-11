@@ -14,14 +14,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- 2. إعدادات Cloudinary ---
-// تأكد أن هذا هو اسم الكلاود الصحيح من لوحة التحكم (Cloud Name)
+// --- 2. إعدادات Cloudinary (الصحيحة والجديدة) ---
 const CLOUD_NAME = "dw9gnbmtd"; 
-const UPLOAD_PRESET = "jkgjk8"; // اسم البريسيت من الصورة التي أرسلتها
+const UPLOAD_PRESET = "wwwewe"; // <--- البريسيت الجديد الذي نجح معك
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
-// --- 3. المنطق البرمجي ---
-
+// --- 3. منطق النشر (Publish Logic) ---
 const publishBtn = document.getElementById('publish-btn');
 
 publishBtn.addEventListener('click', async () => {
@@ -31,16 +29,17 @@ publishBtn.addEventListener('click', async () => {
     const statusMsg = document.getElementById('upload-status');
 
     if (!title || !fileInput.files[0]) {
-        alert("⚠️ يرجى كتابة العنوان واختيار صورة!");
+        alert("يرجى كتابة العنوان واختيار صورة!");
         return;
     }
 
+    // إظهار رسالة التحميل
     statusMsg.innerText = "جاري رفع الصورة... ⏳";
     statusMsg.style.color = "blue";
     publishBtn.disabled = true;
 
     try {
-        // 1. رفع الصورة إلى Cloudinary
+        // أ) رفع الصورة إلى Cloudinary
         const file = fileInput.files[0];
         const formData = new FormData();
         formData.append('file', file);
@@ -53,26 +52,24 @@ publishBtn.addEventListener('click', async () => {
 
         const data = await response.json();
 
-        // فحص إذا كان هناك خطأ من Cloudinary
         if (!response.ok) {
-            console.error("Cloudinary Error:", data);
-            throw new Error("خطأ في رفع الصورة: " + (data.error?.message || "تأكد من اسم الكلاود والبريسيت"));
+            throw new Error(data.error?.message || "فشل رفع الصورة");
         }
 
         const imageUrl = data.secure_url;
         console.log("Image Uploaded:", imageUrl);
 
-        // 2. حفظ البيانات في Firebase
-        statusMsg.innerText = "جاري حفظ البيانات... 💾";
+        // ب) حفظ البيانات في Firebase
+        statusMsg.innerText = "جاري حفظ البيانات في قاعدة البيانات... 💾";
         
         await addDoc(collection(db, "projects"), {
             title: title,
             description: desc,
             imageUrl: imageUrl,
-            createdAt: serverTimestamp()
+            createdAt: serverTimestamp() // لتظهر الأحدث أولاً
         });
 
-        // 3. نجاح
+        // ج) إتمام العملية
         statusMsg.innerText = "تم النشر بنجاح! ✅";
         statusMsg.style.color = "green";
         
@@ -85,35 +82,23 @@ publishBtn.addEventListener('click', async () => {
         setTimeout(() => statusMsg.innerText = "", 3000);
 
     } catch (error) {
-        console.error("Full Error:", error);
-        
-        // عرض رسالة الخطأ الحقيقية للمستخدم
-        let userMessage = "حدث خطأ غير معروف!";
-        
-        if (error.message.includes("خطأ في رفع الصورة")) {
-            userMessage = error.message;
-        } else if (error.message.includes("Missing or insufficient permissions")) {
-            userMessage = "خطأ في الصلاحيات (Firebase Rules)! تأكد من تعديل القواعد إلى true.";
-        } else {
-            userMessage = "خطأ تقني: " + error.message;
-        }
-
-        statusMsg.innerText = userMessage;
+        console.error("Error:", error);
+        statusMsg.innerText = "حدث خطأ: " + error.message;
         statusMsg.style.color = "red";
-        alert("❌ " + userMessage); // رسالة منبثقة لتراها بوضوح
+        alert("❌ حدث خطأ: " + error.message);
         publishBtn.disabled = false;
     }
 });
 
-// --- 4. عرض المشاريع وحذفها ---
+// --- 4. عرض المشاريع وحذفها (Real-time) ---
 const projectsList = document.getElementById('projects-list');
 const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
 onSnapshot(q, (snapshot) => {
-    projectsList.innerHTML = ""; 
+    projectsList.innerHTML = ""; // مسح القائمة
 
     if (snapshot.empty) {
-        projectsList.innerHTML = "<p style='text-align:center'>لا توجد مشاريع حالياً.</p>";
+        projectsList.innerHTML = "<p style='text-align:center; padding:10px;'>لا توجد مشاريع مضافة حالياً.</p>";
     }
 
     snapshot.forEach((docSnapshot) => {
@@ -123,10 +108,10 @@ onSnapshot(q, (snapshot) => {
         const item = document.createElement('div');
         item.className = 'admin-project-card';
         item.innerHTML = `
-            <img src="${project.imageUrl}" class="admin-img-thumb">
+            <img src="${project.imageUrl}" class="admin-img-thumb" alt="project">
             <div class="admin-card-info">
                 <h5>${project.title}</h5>
-                <p>${project.description ? project.description.substring(0, 30) + '...' : ''}</p>
+                <p>${project.description ? project.description.substring(0, 40) + '...' : ''}</p>
             </div>
             <button class="btn-delete" onclick="deleteProject('${id}')">
                 <i class="fa-solid fa-trash"></i>
@@ -136,13 +121,14 @@ onSnapshot(q, (snapshot) => {
     });
 });
 
+// دالة الحذف
 window.deleteProject = async function(id) {
-    if(confirm("هل أنت متأكد من حذف هذا المشروع؟")) {
+    if(confirm("هل أنت متأكد من حذف هذا المشروع نهائياً؟")) {
         try {
             await deleteDoc(doc(db, "projects", id));
+            // لا نحتاج لرسالة نجاح لأن القائمة ستحدث نفسها تلقائياً
         } catch (error) {
-            console.error("Delete Error:", error);
-            alert("حدث خطأ أثناء الحذف: " + error.message);
+            alert("فشل الحذف: " + error.message);
         }
     }
 }
