@@ -1,12 +1,10 @@
 :root {
-    /* الألوان الجديدة */
     --primary-color: #845449; /* البني الداكن */
     --secondary-color: #131111; /* الأسود */
-    --light-bg: #f8f5f0; /* البيج الفاتح للخلفية */
+    --light-bg: #f8f5f0; /* البيج الفاتح */
     --text-dark: var(--secondary-color);
     --text-light: #ffffff;
     --transition: all 0.3s ease;
-    /* الخطوط */
     --font-ar: 'Noto Kufi Arabic', sans-serif;
     --font-en: 'Cascadia Code', monospace;
 }
@@ -51,21 +49,28 @@ header {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --- تنسيق صورة الشعار في الهيدر --- */
+.header-logo-img {
+    width: 40px;       /* عرض الشعار */
+    height: 40px;      /* ارتفاع الشعار */
+    border-radius: 50%; /* يجعل الصورة دائرية */
+    object-fit: cover; /* يضمن ملء الدائرة بالصورة دون مط */
+    border: 1px solid var(--primary-color); /* إطار رفيع اختياري */
+}
+
+.logo-text {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
     display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* LOGO HANDLING - استدعاء ملف الشعار */
-.new-logo-svg {
-    width: 35px;
-    height: 35px;
-    -webkit-mask: url('logo.svg') no-repeat center / contain;
-    mask: url('logo.svg') no-repeat center / contain;
-    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1;
 }
 
 .lang-btn {
@@ -99,23 +104,24 @@ header {
 }
 
 .hero-logo-container {
-    margin-bottom: 20px;
-    width: 120px;
-    height: 120px;
+    margin-bottom: 25px;
+    width: 130px;
+    height: 130px;
     background: var(--light-bg);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    padding: 5px; /* مسافة بسيطة بين الصورة والإطار الأبيض */
 }
 
-.hero-logo-svg {
-    width: 80px;
-    height: 80px;
-    -webkit-mask: url('logo.svg') no-repeat center / contain;
-    mask: url('logo.svg') no-repeat center / contain;
-    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+/* --- تنسيق صورة الشعار الكبيرة في المنتصف --- */
+.hero-logo-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* يجعل الصورة دائرية */
+    object-fit: cover; /* يضمن ملء الدائرة بالصورة دون مط */
 }
 
 .hero h1 {
