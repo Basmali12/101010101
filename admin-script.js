@@ -1,6 +1,6 @@
-// --- 1. إعدادات فايربيس (نفس التي لديك) ---
+// --- 1. إعدادات فايربيس ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBAnDMYjA-nA6L_pmoujAEpziGjZRwLB94",
@@ -15,12 +15,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // --- 2. إعدادات Cloudinary ---
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dw9gnbmtd/image/upload";
-const UPLOAD_PRESET = "jkgjk8";
+// تأكد أن هذا هو اسم الكلاود الصحيح من لوحة التحكم (Cloud Name)
+const CLOUD_NAME = "dw9gnbmtd"; 
+const UPLOAD_PRESET = "jkgjk8"; // اسم البريسيت من الصورة التي أرسلتها
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 // --- 3. المنطق البرمجي ---
 
-// زر النشر
 const publishBtn = document.getElementById('publish-btn');
 
 publishBtn.addEventListener('click', async () => {
@@ -29,31 +30,37 @@ publishBtn.addEventListener('click', async () => {
     const fileInput = document.getElementById('project-image');
     const statusMsg = document.getElementById('upload-status');
 
-    // تحقق من المدخلات
     if (!title || !fileInput.files[0]) {
-        alert("يرجى كتابة العنوان واختيار صورة!");
+        alert("⚠️ يرجى كتابة العنوان واختيار صورة!");
         return;
     }
 
-    // 1. بدء الرفع
     statusMsg.innerText = "جاري رفع الصورة... ⏳";
     statusMsg.style.color = "blue";
     publishBtn.disabled = true;
 
     try {
-        // تجهيز ملف الصورة للرفع
+        // 1. رفع الصورة إلى Cloudinary
         const file = fileInput.files[0];
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', UPLOAD_PRESET);
 
-        // رفع إلى Cloudinary
         const response = await fetch(CLOUDINARY_URL, {
             method: 'POST',
             body: formData
         });
+
         const data = await response.json();
-        const imageUrl = data.secure_url; // رابط الصورة الجاهز
+
+        // فحص إذا كان هناك خطأ من Cloudinary
+        if (!response.ok) {
+            console.error("Cloudinary Error:", data);
+            throw new Error("خطأ في رفع الصورة: " + (data.error?.message || "تأكد من اسم الكلاود والبريسيت"));
+        }
+
+        const imageUrl = data.secure_url;
+        console.log("Image Uploaded:", imageUrl);
 
         // 2. حفظ البيانات في Firebase
         statusMsg.innerText = "جاري حفظ البيانات... 💾";
@@ -62,7 +69,7 @@ publishBtn.addEventListener('click', async () => {
             title: title,
             description: desc,
             imageUrl: imageUrl,
-            createdAt: serverTimestamp() // لتظهر الأحدث أولاً
+            createdAt: serverTimestamp()
         });
 
         // 3. نجاح
@@ -75,25 +82,35 @@ publishBtn.addEventListener('click', async () => {
         fileInput.value = "";
         publishBtn.disabled = false;
 
-        // إخفاء رسالة النجاح بعد 3 ثواني
         setTimeout(() => statusMsg.innerText = "", 3000);
 
     } catch (error) {
-        console.error("Error:", error);
-        statusMsg.innerText = "حدث خطأ! حاول مرة أخرى ❌";
+        console.error("Full Error:", error);
+        
+        // عرض رسالة الخطأ الحقيقية للمستخدم
+        let userMessage = "حدث خطأ غير معروف!";
+        
+        if (error.message.includes("خطأ في رفع الصورة")) {
+            userMessage = error.message;
+        } else if (error.message.includes("Missing or insufficient permissions")) {
+            userMessage = "خطأ في الصلاحيات (Firebase Rules)! تأكد من تعديل القواعد إلى true.";
+        } else {
+            userMessage = "خطأ تقني: " + error.message;
+        }
+
+        statusMsg.innerText = userMessage;
         statusMsg.style.color = "red";
+        alert("❌ " + userMessage); // رسالة منبثقة لتراها بوضوح
         publishBtn.disabled = false;
     }
 });
 
-// --- 4. عرض المشاريع وحذفها (Real-time) ---
+// --- 4. عرض المشاريع وحذفها ---
 const projectsList = document.getElementById('projects-list');
-
-// الاستماع لأي تغيير في قاعدة البيانات
 const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
 onSnapshot(q, (snapshot) => {
-    projectsList.innerHTML = ""; // مسح القائمة الحالية
+    projectsList.innerHTML = ""; 
 
     if (snapshot.empty) {
         projectsList.innerHTML = "<p style='text-align:center'>لا توجد مشاريع حالياً.</p>";
@@ -103,7 +120,6 @@ onSnapshot(q, (snapshot) => {
         const project = docSnapshot.data();
         const id = docSnapshot.id;
 
-        // إنشاء عنصر القائمة
         const item = document.createElement('div');
         item.className = 'admin-project-card';
         item.innerHTML = `
@@ -120,15 +136,13 @@ onSnapshot(q, (snapshot) => {
     });
 });
 
-// دالة الحذف (يجب ربطها بالـ Window لأننا نستخدم Type Module)
 window.deleteProject = async function(id) {
     if(confirm("هل أنت متأكد من حذف هذا المشروع؟")) {
         try {
             await deleteDoc(doc(db, "projects", id));
-            // لا نحتاج لتحديث الواجهة يدوياً، onSnapshot ستقوم بذلك
         } catch (error) {
-            console.error("Error deleting:", error);
-            alert("حدث خطأ أثناء الحذف");
+            console.error("Delete Error:", error);
+            alert("حدث خطأ أثناء الحذف: " + error.message);
         }
     }
 }
